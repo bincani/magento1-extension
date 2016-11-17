@@ -9,6 +9,8 @@
 class Ess_M2ePro_Model_Ebay_Template_Description_Source
 {
     const GALLERY_IMAGES_COUNT_MAX = 11;
+    const GALLERY_IMAGES_MIN_WIDTH = 500;
+    const GALLERY_IMAGES_MIN_HEIGHT = 500;
     const VARIATION_IMAGES_COUNT_MAX = 12;
 
     /**
@@ -296,6 +298,23 @@ class Ess_M2ePro_Model_Ebay_Template_Description_Source
         foreach ($galleryImages as &$image) {
             $image = $this->addWatermarkIfNeed($image);
         }
+
+        /*
+        remove small images
+        */
+        $galleryImagesTmp = array();
+        $size = count($galleryImages);
+        for($i = 0; $i < $size; $i++) {
+            list($width, $height, $type, $attr) = getimagesize($galleryImages[$i]);
+            if (
+                $width >= self::GALLERY_IMAGES_MIN_WIDTH
+                &&
+                $height >= self::GALLERY_IMAGES_MIN_HEIGHT
+            ) {
+                $galleryImagesTmp[] = $galleryImages[$i];
+            }
+        }
+        $galleryImages = $galleryImagesTmp;
 
         $mainImagePosition = array_search($mainImage[0], $galleryImages);
         if ($mainImagePosition !== false) {
