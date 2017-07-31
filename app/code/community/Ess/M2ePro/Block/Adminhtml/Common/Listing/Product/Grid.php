@@ -247,6 +247,18 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Grid extends Mage_Adminh
             'frame_callback' => array($this, 'callbackColumnPrice')
         ));
 
+        $this->addColumn('special_price', array(
+            'header'    => Mage::helper('M2ePro')->__('Sale Price'),
+            'align'     => 'right',
+            'width'     => '100px',
+            'type'      => 'price',
+            'currency_code' => $store->getBaseCurrency()->getCode(),
+            'index'     => 'special_price',
+            'filter_index' => 'special_price'
+            // causes memory leak
+            //'frame_callback' => array($this, 'callbackColumnSpecialPrice')
+        ));
+
         $this->addColumn('qty', array(
             'header'    => Mage::helper('M2ePro')->__('QTY'),
             'align'     => 'right',
@@ -386,6 +398,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Product_Grid extends Mage_Adminh
         $rowVal = $row->getData();
 
         if (!isset($rowVal['price']) || (float)$rowVal['price'] <= 0) {
+            $value = 0;
+            $value = '<span style="color: red;">'.$value.'</span>';
+        }
+        return $value;
+    }
+
+    public function callbackColumnSpecialPrice($value, $row, $column, $isExport)
+    {
+        $rowVal = $row->getData();
+
+        if (!isset($rowVal['special_price']) || (float)$rowVal['special_price'] <= 0) {
             $value = 0;
             $value = '<span style="color: red;">'.$value.'</span>';
         }

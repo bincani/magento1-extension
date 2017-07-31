@@ -113,6 +113,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             ),
             '{{table}}.listing_id='.(int)$listingData['id']
         );
+        
+        /*
+        add special_price to listing
+        */
+        $collection->joinTable(
+            array('cped' => 'catalog_product_entity_decimal'),
+            'entity_id=entity_id',
+            array(
+                'special_price' => 'value'
+            ),
+            'cped.attribute_id = (select attribute_id from eav_attribute where attribute_code = \'special_price\')'
+        );
+               
         $collection->joinTable(
             array('elp' => 'M2ePro/Ebay_Listing_Product'),
             'listing_product_id=id',
@@ -177,6 +190,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 
         // Set collection to grid
         $this->setCollection($collection);
+        //Mage::log(sprintf("%s->SQL: %s", __METHOD__, $collection->getSelect()->__toString()));
 
         return parent::_prepareCollection();
     }
@@ -247,6 +261,20 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             'filter_index' => $priceSortField,
             'frame_callback' => array($this, 'callbackColumnPrice'),
             'filter_condition_callback' => array($this, 'callbackFilterPrice')
+        ));
+
+        $storeId = (int) $this->getRequest()->getParam('store', 0);
+        $store = Mage::app()->getStore($storeId);
+        $this->addColumn('special_price', array(
+            'header'    => Mage::helper('M2ePro')->__('Sale Price'),
+            'align'     =>'right',
+            'width'     => '50px',
+            'type'      => 'price',
+            'currency_code' => $store->getBaseCurrency()->getCode(), 
+            'index'     => 'special_price',
+            'filter_index' => 'special_price'
+            //'frame_callback' => array($this, 'callbackColumnSpecialPrice'),
+            //'filter_condition_callback' => array($this, 'callbackFilterSpecialPrice')
         ));
 
         $this->addColumn('end_date', array(

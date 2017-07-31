@@ -86,6 +86,9 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
                 'price', 'catalog_product/price', 'entity_id', NULL, 'left', $store->getId()
             );
             $collection->joinAttribute(
+                'special_price', 'catalog_product/special_price', 'entity_id', NULL, 'left', $store->getId()
+            );            
+            $collection->joinAttribute(
                 'status', 'catalog_product/status', 'entity_id', NULL, 'inner',$store->getId()
             );
             $collection->joinAttribute(
@@ -96,6 +99,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
             );
         } else {
             $collection->addAttributeToSelect('price');
+            $collection->addAttributeToSelect('special_price');
             $collection->addAttributeToSelect('status');
             $collection->addAttributeToSelect('visibility');
             $collection->addAttributeToSelect('thumbnail');
@@ -223,6 +227,18 @@ abstract class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Grid
             'index'     => 'price',
             'filter_index' => 'price',
             'frame_callback' => array($this, 'callbackColumnPrice')
+        ));
+
+        $this->addColumn('special_price', array(
+            'header'    => Mage::helper('M2ePro')->__('Sale Price'),
+            'align'     => 'right',
+            'width'     => '100px',
+            'type'      => 'price',
+            'currency_code' => $store->getBaseCurrency()->getCode(),
+            'index'     => 'special_price',
+            'filter_index' => 'special_price'
+            // causes memory leak
+            //'frame_callback' => array($this, 'callbackColumnSpecialPrice')
         ));
 
         $this->addColumn('qty', array(
