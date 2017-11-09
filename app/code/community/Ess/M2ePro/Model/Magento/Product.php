@@ -1327,7 +1327,11 @@ class Ess_M2ePro_Model_Magento_Product
             return '';
         }
 
-        return str_replace(' ', '%20', $url);
+        // replace spaces
+        $url = str_replace(' ', '%20', $url);
+        // replace protocol
+        $url = str_replace('http://', '//', $url);
+        return $url;
     }
 
     //########################################
