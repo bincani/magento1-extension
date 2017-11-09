@@ -1082,7 +1082,7 @@ class Ess_M2ePro_Model_Magento_Product
 
         // PRICE
         }  else if ($attribute->getFrontendInput() == 'price') {
-            $value = (string)round($value, 2);
+            $value = (string)number_format($value, 2, '.', '');
 
         // MEDIA IMAGE
         }  else if ($attribute->getFrontendInput() == 'media_image') {
@@ -1090,9 +1090,12 @@ class Ess_M2ePro_Model_Magento_Product
                 $value = '';
             } else {
                 if (!preg_match('((mailto\:|(news|(ht|f)tp(s?))\://){1}\S+)',$value)) {
+
                     $value = Mage::app()->getStore($this->getStoreId())
-                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
-                                        'catalog/product/'.ltrim($value,'/');
+                            ->getBaseUrl(
+                                Mage_Core_Model_Store::URL_TYPE_MEDIA,
+                                Mage::helper('M2ePro/Magento')->shouldBeSecure($this->getStoreId())
+                            ) . 'catalog/product/'.ltrim($value,'/');
                 }
             }
         }
@@ -1161,7 +1164,7 @@ class Ess_M2ePro_Model_Magento_Product
             return NULL;
         }
 
-        $imagePathOriginal = Mage::getBaseDir('media').DS.'catalog/product'.$tempPath;
+        $imagePathOriginal = Mage::getBaseDir('media').DS.'catalog/product'.$thumbnailTempPath;
 
         if (!is_file($imagePathOriginal)) {
             return NULL;
@@ -1174,7 +1177,11 @@ class Ess_M2ePro_Model_Magento_Product
         $imagePathResized   = dirname($imagePathOriginal).DS.$prefixResizedImage.basename($imagePathOriginal);
 
         $baseUrl = Mage::app()->getStore($this->getStoreId())
-                              ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false);
+                              ->getBaseUrl(
+                                  Mage_Core_Model_Store::URL_TYPE_MEDIA,
+                                  Mage::helper('M2ePro/Magento')->shouldBeSecure(
+                                      $this->getStoreId(), Mage_Core_Model_App_Area::AREA_ADMIN
+                                  ));
 
         if (is_file($imagePathResized)) {
 
@@ -1256,8 +1263,10 @@ class Ess_M2ePro_Model_Magento_Product
         }
 
         $imageUrl = Mage::app()->getStore($this->getStoreId())
-                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
-                        'catalog/product/'.ltrim($galleryImage['file'],'/');
+                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA,
+                            Mage::helper('M2ePro/Magento')->shouldBeSecure(
+                                $this->getStoreId()
+                            )).'catalog/product/'.ltrim($galleryImage['file'],'/');
 
         return $this->prepareImageUrl($imageUrl);
     }
@@ -1294,8 +1303,10 @@ class Ess_M2ePro_Model_Magento_Product
             }
 
             $imageUrl = Mage::app()->getStore($this->getStoreId())
-                            ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
-                            'catalog/product/'.ltrim($galleryImage['file'],'/');
+                            ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA,
+                                Mage::helper('M2ePro/Magento')->shouldBeSecure(
+                                    $this->getStoreId()
+                                )).'catalog/product/'.ltrim($galleryImage['file'],'/');
 
             $imageUrl = $this->prepareImageUrl($imageUrl);
 
