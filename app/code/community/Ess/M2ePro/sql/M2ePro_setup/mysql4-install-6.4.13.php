@@ -304,7 +304,6 @@ CREATE TABLE `m2epro_lock_item` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nick` VARCHAR(255) NOT NULL,
   `parent_id` INT(11) UNSIGNED DEFAULT NULL,
-  `kill_now` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `data` TEXT DEFAULT NULL,
   `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
@@ -313,6 +312,18 @@ CREATE TABLE `m2epro_lock_item` (
   INDEX `parent_id` (`parent_id`)
 )
 ENGINE = MYISAM
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS `m2epro_lock_transactional`;
+CREATE TABLE `m2epro_lock_transactional` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nick` VARCHAR(255) NOT NULL,
+  `create_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `nick` (`nick`)
+)
+ENGINE = INNODB
 CHARACTER SET utf8
 COLLATE utf8_general_ci;
 
@@ -859,7 +870,6 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`creat
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/view/ebay/multi_currency_marketplace_19/', 'notification_shown', '0', NULL,
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  ('/view/ebay/terapeak/', 'mode', '1', NULL, '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/debug/exceptions/', 'send_to_server', '1', '0 - disable,\r\n1 - enable', '2013-05-08 00:00:00',
    '2013-05-08 00:00:00'),
   ('/debug/exceptions/', 'filters_mode', '0', '0 - disable,\r\n1 - enable', '2013-05-08 00:00:00',
@@ -1563,6 +1573,7 @@ CREATE TABLE `m2epro_ebay_order_item` (
   `qty_purchased` INT(11) UNSIGNED NOT NULL,
   `tax_details` TEXT DEFAULT NULL,
   `final_fee` DECIMAL(12, 4) NOT NULL DEFAULT 0.0000,
+  `waste_recycling_fee` DECIMAL(12, 4) NOT NULL DEFAULT 0.0000,
   `variation_details` TEXT DEFAULT NULL,
   `tracking_details` TEXT DEFAULT NULL,
   `unpaid_item_process_state` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
@@ -2985,7 +2996,11 @@ INSERT INTO `m2epro_marketplace` VALUES
    '2013-05-08 00:00:00'),
   (30, 7, 'Spain', 'ES', 'amazon.es', 0, 8, 'Europe', 'amazon', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   (31, 8, 'Italy', 'IT', 'amazon.it', 0, 5, 'Europe', 'amazon', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
-  (32, 9, 'China', 'CN', 'amazon.cn', 0, 9, 'Asia / Pacific', 'amazon', '2013-05-08 00:00:00', '2013-05-08 00:00:00');
+  (32, 9, 'China', 'CN', 'amazon.cn', 0, 9, 'Asia / Pacific', 'amazon', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  (34, 9, 'Mexico', 'MX', 'amazon.com.mx', 0, 10, 'America', 'amazon', '2017-09-27 00:00:00', '2017-09-27 00:00:00'),
+  (35, 10, 'Australia', 'AU', 'amazon.com.au', 0, 11, 'Asia / Pacific', 'amazon', '2017-09-27 00:00:00',
+   '2017-09-27 00:00:00'),
+  (36, 0, 'India', 'IN', 'amazon.in', 0, 12, 'Asia / Pacific', 'amazon', '2017-09-27 00:00:00', '2017-09-27 00:00:00');
 
 INSERT INTO `m2epro_amazon_marketplace` VALUES
   (24, '8636-1433-4377', 'CAD',1,0),
@@ -2996,7 +3011,10 @@ INSERT INTO `m2epro_amazon_marketplace` VALUES
   (29, '8636-1433-4377', 'USD',1,1),
   (30, '7078-7205-1944', 'EUR',1,0),
   (31, '7078-7205-1944', 'EUR',1,0),
-  (32, NULL, '',0,0);
+  (32, NULL, '',0,0),
+  (34, '8636-1433-4377', 'MXN',0,0),
+  (35, '2770-5005-3793', 'AUD',1,0),
+  (36, NULL, '',0,0);
 
 SQL
 );
