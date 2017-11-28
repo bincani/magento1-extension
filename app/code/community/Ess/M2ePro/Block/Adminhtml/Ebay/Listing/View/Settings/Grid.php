@@ -103,6 +103,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Settings_Grid
             Mage::getModel('catalog/product')->getResource());
         $collection->addAttributeToSelect('sku');
         $collection->addAttributeToSelect('name');
+        $collection->addAttributeToSelect('online_only');
+        
         // ---------------------------------------
 
         // Join listing product tables

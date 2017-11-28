@@ -98,6 +98,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         $collection->setListingProductModeOn();
         $collection->addAttributeToSelect('sku');
         $collection->addAttributeToSelect('name');
+        $collection->addAttributeToSelect('online_only');
+                
         // ---------------------------------------
 
         // Join listing product tables
@@ -222,6 +224,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             'type'      => 'text',
             'index'     => 'item_id',
             'frame_callback' => array($this, 'callbackColumnEbayItemId')
+        ));
+
+        $this->addColumn('ebay_item_id', array(
+            'header'    => Mage::helper('M2ePro')->__('Online Only'),
+            'align'     => 'left',
+            'width'     => '100px',
+            'type'      => 'text',
+            'index'     => 'online_only',
+            //'frame_callback' => array($this, 'callbackColumnOnlineOnly')
         ));
 
         $this->addColumn('available_qty', array(
